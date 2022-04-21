@@ -1,0 +1,11 @@
+dist/
+node_modules/
+coverage/
+TODOS/
+.DS_Store
+/src/lib/tests
+README_prev.md
+/.env
+versions/
+webpack-stats.json
+logs/

@@ -1,0 +1,49 @@
+const { merge } = require('webpack-merge');
+const TerserPlugin = require('terser-webpack-plugin');
+const common = require('./webpack.common.js');
+const sveltePreprocess = require('svelte-preprocess');
+
+module.exports = merge(common, {
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.svelte$/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            compilerOptions: {
+              dev: false
+            },
+            emitCss: true,
+            hotReload: false,
+            preprocess: sveltePreprocess({ sourceMap: false })
+          }
+        }
+      },
+    ],
+  },
+  optimization: {
+    minimize: false,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+
+        /*
+         * Google requires some conditions:
+         * - Removal of whitespace, newlines, code comments, and block delimiters
+         * - Shortening of variable and function names
+         * - Collapsing the number of JavaScript files
+         */
+        terserOptions: {
+          compress: false, // To rename variables & function names
+          mangle: false, // Note `mangle.properties` is `false` by default.
+        },
+      }),
+    ],
+    // splitChunks: {
+    //   chunks: 'all',
+    // },
+    usedExports: true,
+  },
+});
